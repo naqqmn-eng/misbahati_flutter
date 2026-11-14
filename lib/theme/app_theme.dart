@@ -6,7 +6,7 @@ class AppTheme {
   // Compatibility aliases for existing widgets.
   static const gold = emerald;
   static const goldLight = teal;
-  static const background = light;
+  static const background = Color(0xFFF4F7F3);
   static const surface = Color(0xFFFFFFFF);
   static const surfaceRaised = Color(0xFFE8F2ED);
   static const text = Color(0xFF172B25);
