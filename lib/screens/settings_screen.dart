@@ -18,8 +18,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final colors = Theme.of(context).extension<MisbahatiColors>();
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(appBar: AppBar(title: const Text('الإعدادات')), body: ListView(padding: const EdgeInsets.all(20), children: [
-      Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0B7965), Color(0xFF164C43)])),
-        child: const Row(children: [Icon(Icons.tune_rounded, color: Color(0xFF8BE0C8), size: 28), SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('تجربتك، كما تحب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16)), SizedBox(height: 4), Text('خصص مظهر التطبيق وطريقة التفاعل', style: TextStyle(color: Colors.white70, fontSize: 12))]))])),
+      Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F1B2D), Color(0xFF1A2E4A)])),
+        child: const Row(children: [Icon(Icons.tune_rounded, color: Color(0xFFA8CBE8), size: 28), SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('تجربتك، كما تحب', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16)), SizedBox(height: 4), Text('خصص مظهر التطبيق وطريقة التفاعل', style: TextStyle(color: Colors.white70, fontSize: 12))]))])),
       const SizedBox(height: 22), _section('المظهر'),
       Card(child: Padding(padding: const EdgeInsets.all(15), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('اختر النمط المناسب لك', style: TextStyle(fontWeight: FontWeight.w700, color: scheme.onSurface)), const SizedBox(height: 12),

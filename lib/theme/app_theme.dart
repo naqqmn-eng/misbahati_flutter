@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const emerald = Color(0xFF087F68);
-  static const teal = Color(0xFF36A995);
+  static const emerald = Color(0xFF0F1B2D);
+  static const teal = Color(0xFF7FB3D5);
   // Compatibility aliases for existing widgets.
-  static const gold = Color(0xFF087F68);
-  static const goldLight = Color(0xFF36A995);
-  static const background = Color(0xFFF4F7F3);
+  static const gold = Color(0xFF7FB3D5);
+  static const goldLight = Color(0xFFA8CBE8);
+  static const background = Color(0xFFF2F4F7);
   static const surface = Color(0xFFFFFFFF);
-  static const surfaceRaised = Color(0xFFE8F2ED);
-  static const text = Color(0xFF172B25);
-  static const outline = Color(0xFFDCE7E1);
-  static const muted = Color(0xFF71817A);
-  static const light = Color(0xFFF4F7F3);
-  static const dark = Color(0xFF101B18);
+  static const surfaceRaised = Color(0xFFE8EDF2);
+  static const text = Color(0xFF0F1B2D);
+  static const outline = Color(0xFFD9DEE5);
+  static const muted = Color(0xFF7A8695);
+  static const light = Color(0xFFF2F4F7);
+  static const dark = Color(0xFF0F1B2D);
 
   static ThemeData get lightTheme => _build(Brightness.light);
   static ThemeData get darkTheme => _build(Brightness.dark);
 
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF101B18) : const Color(0xFFF4F7F3);
-    final surface = isDark ? const Color(0xFF1B2A25) : Colors.white;
-    final raised = isDark ? const Color(0xFF243A32) : const Color(0xFFE8F2ED);
-    final fg = isDark ? const Color(0xFFEAF4EF) : const Color(0xFF172B25);
-    final secondary = isDark ? const Color(0xFFA7B9B0) : muted;
-    final line = isDark ? const Color(0xFF344A40) : const Color(0xFFDCE7E1);
+    final bg = isDark ? const Color(0xFF0F1B2D) : const Color(0xFFF2F4F7);
+    final surface = isDark ? const Color(0xFF1A2E4A) : Colors.white;
+    final raised = isDark ? const Color(0xFF243A5A) : const Color(0xFFE8EDF2);
+    final fg = isDark ? const Color(0xFFF2F4F7) : const Color(0xFF0F1B2D);
+    final secondary = isDark ? const Color(0xFFC0C8D0) : muted;
+    final line = isDark ? const Color(0xFF2A3F5F) : const Color(0xFFD9DEE5);
     final scheme = (isDark ? const ColorScheme.dark() : const ColorScheme.light()).copyWith(
       primary: emerald, secondary: teal, surface: surface, onSurface: fg,
       onPrimary: Colors.white, outline: line,
@@ -39,7 +39,7 @@ class AppTheme {
       cardTheme: CardThemeData(color: surface, elevation: 0, margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22), side: BorderSide(color: line))),
       dividerColor: line,
-      snackBarTheme: SnackBarThemeData(backgroundColor: isDark ? const Color(0xFF263B32) : fg,
+      snackBarTheme: SnackBarThemeData(backgroundColor: isDark ? const Color(0xFF243A5A) : fg,
         contentTextStyle: const TextStyle(color: Colors.white), behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       listTileTheme: ListTileThemeData(iconColor: emerald, textColor: fg),

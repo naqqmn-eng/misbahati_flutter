@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId "com.misbahati.misbahati"
-        minSdk 31
+        minSdk 29
         targetSdk 36
         versionCode flutter.versionCode
         versionName flutter.versionName

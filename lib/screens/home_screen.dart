@@ -17,11 +17,13 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late int count, target;
   late String dhikr;
   late bool haptics;
   late final AnimationController _glowController;
+  late final AnimationController _heartController;
+  late final AnimationController _pulseController;
 
   @override
   void initState() {
@@ -31,21 +33,50 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     dhikr = widget.storage.dhikr;
     haptics = widget.storage.haptics;
     _glowController = AnimationController(vsync: this, duration: const Duration(seconds: 3))..repeat(reverse: true);
+    _heartController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
+    _pulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 150), lowerBound: 0.0, upperBound: 0.08);
   }
 
   @override
   void dispose() {
     _glowController.dispose();
+    _heartController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
+  double get heartScale {
+    final v = _heartController.value;
+    if (v < 0.15) return 1.0 + v * 0.35;
+    if (v < 0.30) return 1.05 - (v - 0.15) * 0.25;
+    if (v < 0.45) return 1.0 + (v - 0.30) * 0.35;
+    return 1.05 - (v - 0.45) * 0.08;
+  }
+
   Future<void> increment() async {
+    // يوقف عند الهدف - ما يكمل بعد الهدف
+    if (count >= target) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('أتممت وِردك: $target مرة - $dhikr، صفّر العداد لتبدأ من جديد.')),
+        );
+      }
+      return;
+    }
     setState(() => count++);
     await widget.storage.saveCount(count);
-    if (haptics) HapticFeedback.selectionClick();
+    if (widget.storage.haptics) HapticFeedback.selectionClick();
     if (count == target && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ما شاء الله، أتممت وِردك! يمكنك مواصلة التسبيح.')));
+      if (widget.storage.haptics) HapticFeedback.heavyImpact();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('ما شاء الله، أتممت وِردك! $target مرة - $dhikr')));
     }
+  }
+
+  Future<void> onBigButtonTap() async {
+    if (widget.storage.haptics) HapticFeedback.mediumImpact();
+    _pulseController.forward().then((_) => _pulseController.reverse());
+    await increment();
+    if (widget.storage.haptics && count >= target) HapticFeedback.vibrate();
   }
 
   Future<void> reset() async {
@@ -70,18 +101,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(width: 38, height: 4, decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(5))),
           const SizedBox(height: 20), const Text('اختر وِردك', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 8), const Text('حدد عدد التسبيحات التي ترغب بإكمالها', style: TextStyle(color: AppTheme.muted, fontSize: 12)),
+          const SizedBox(height: 8), Text('الذكر المختار: $dhikr', style: const TextStyle(color: AppTheme.emerald, fontSize: 13, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 4), const Text('حدد عدد التسبيحات التي ترغب بإكمالها، سيتوقف العداد عندها', style: TextStyle(color: AppTheme.muted, fontSize: 12)),
           const SizedBox(height: 16),
           for (final n in targets) ListTile(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            title: Center(child: Text('$n تسبيحة', style: const TextStyle(fontWeight: FontWeight.w600))),
+            title: Center(child: Text('$n مرة - $dhikr', style: const TextStyle(fontWeight: FontWeight.w600))),
             trailing: target == n ? const Icon(Icons.check_circle, color: AppTheme.gold) : const Icon(Icons.circle_outlined, color: Colors.black26),
             onTap: () => Navigator.pop(c, n),
           ),
         ]),
       )),
     );
-    if (v != null) { setState(() => target = v); await widget.storage.saveTarget(v); }
+    if (v != null) { setState(() { target = v; count = 0; }); await widget.storage.saveTarget(v); await widget.storage.saveCount(0); }
   }
 
   Future<void> chooseDhikr(String value) async {
@@ -94,12 +126,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<MisbahatiColors>()!;
+    final finished = count >= target;
     return Scaffold(
     drawer: AppDrawer(storage: widget.storage, themeMode: widget.themeMode, onThemeChanged: widget.onThemeChanged),
     appBar: AppBar(
       title: Row(mainAxisSize: MainAxisSize.min, children: [
         const Icon(Icons.spa_rounded, color: AppTheme.gold, size: 21),
-        const SizedBox(width: 9), const Text('مسبحتي'),
+        const SizedBox(width: 9), const Text('سَكِينة'),
       ]),
       actions: [IconButton(tooltip: 'الإعدادات', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsScreen(storage: widget.storage, themeMode: widget.themeMode, onThemeChanged: widget.onThemeChanged))), icon: const Icon(Icons.tune_rounded, color: AppTheme.muted, size: 21))],
     ),
@@ -116,21 +149,67 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(height: 25),
           DhikrSelector(selected: dhikr, onSelected: chooseDhikr),
           const SizedBox(height: 27),
-          ProgressRing(count: count, target: target, onTap: increment),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _heartController,
+                builder: (_, __) => Transform.scale(
+                  scale: heartScale,
+                  child: Container(
+                    width: 295, height: 295,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          const Color(0xFF7FB3D5).withOpacity(0.12),
+                          const Color(0xFF10B981).withOpacity(0.10),
+                          const Color(0xFF14B8A6).withOpacity(0.08),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              AnimatedBuilder(
+                animation: _heartController,
+                builder: (_, __) => Transform.scale(
+                  scale: 1.0 + (_heartController.value < 0.3 ? _heartController.value * 0.04 : 0.0),
+                  child: Container(
+                    width: 255, height: 255,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppTheme.gold.withOpacity(0.18), width: 1.2),
+                    ),
+                  ),
+                ),
+              ),
+              ProgressRing(count: count, target: target, onTap: increment),
+            ],
+          ),
           const SizedBox(height: 12),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Icon(Icons.touch_app_rounded, size: 16, color: AppTheme.gold.withOpacity(.8)),
             const SizedBox(width: 7),
-            const Text('المس الدائرة أو الزر للتسبيح', style: TextStyle(color: AppTheme.muted, fontSize: 12)),
+            Text(finished ? 'أتممت وِردك - صفّر لتبدأ من جديد' : 'المس الدائرة أو الزر للتسبيح', style: TextStyle(color: AppTheme.muted, fontSize: 12)),
           ]),
           const SizedBox(height: 24),
-          SizedBox(width: double.infinity, height: 59, child: FilledButton(
-            onPressed: increment,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.fingerprint_rounded, size: 24), const SizedBox(width: 10), const Text('سَبِّح الآن', style: TextStyle(fontSize: 17, letterSpacing: .3))]),
-          )),
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (_, child) => Transform.scale(scale: 1.0 - _pulseController.value, child: child),
+            child: SizedBox(width: double.infinity, height: 59, child: FilledButton(
+              onPressed: onBigButtonTap,
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(Icons.fingerprint_rounded, size: 24),
+                const SizedBox(width: 10),
+                Text(finished ? 'أتممت - $dhikr' : dhikr, style: const TextStyle(fontSize: 17, letterSpacing: .3)),
+              ]),
+            )),
+          ),
           const SizedBox(height: 13),
           Row(children: [
-            Expanded(child: _UtilityButton(icon: Icons.flag_rounded, title: 'الهدف', value: '$target', onTap: chooseTarget)),
+            Expanded(child: _UtilityButton(icon: Icons.flag_rounded, title: 'الهدف', value: '$target - $dhikr', onTap: chooseTarget)),
             const SizedBox(width: 12),
             Expanded(child: _UtilityButton(icon: Icons.restart_alt_rounded, title: 'إعادة العداد', value: 'تصفير', onTap: reset)),
           ]),

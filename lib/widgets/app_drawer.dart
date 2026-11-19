@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../screens/info_screens.dart';
 import '../screens/settings_screen.dart';
 import '../services/storage_service.dart';
@@ -15,6 +16,10 @@ class AppDrawer extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
   }
 
+  void shareApp() {
+    Share.share('سَكِينة - رفيق الذكر والطمأنينة 📿\nحمّل التطبيق وابدأ الذكر معنا.\nhttps://t.me/U_S5S');
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<MisbahatiColors>()!;
@@ -25,31 +30,30 @@ class AppDrawer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 25),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
-          gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0B7965), Color(0xFF164C43)]),
+          gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF0F1B2D), Color(0xFF1A2E4A)]),
           border: Border.all(color: AppTheme.gold.withOpacity(.20)),
         ),
         child: Column(children: [
           Container(width: 62, height: 62, decoration: BoxDecoration(shape: BoxShape.circle, color: AppTheme.gold.withOpacity(.12), border: Border.all(color: AppTheme.gold.withOpacity(.35))), child: const Icon(Icons.nightlight_round, color: AppTheme.goldLight, size: 29)),
           const SizedBox(height: 12),
-          const Text('مسبحتي', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w800, color: Colors.white)),
+          const Text('سَكِينة', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w800, color: Colors.white)),
           const SizedBox(height: 4),
           const Text('رفيق الذكر والطمأنينة', style: TextStyle(color: Colors.white70, fontSize: 11)),
           const SizedBox(height: 12),
-          const Text('ᯓN-A-Qᯓ', style: TextStyle(color: Color(0xFF8BE0C8), fontSize: 12, fontWeight: FontWeight.w600)),
+          const Text('ᯓN-A-Qᯓ', style: TextStyle(color: Color(0xFFA8CBE8), fontSize: 12, fontWeight: FontWeight.w600)),
         ]),
       ),
       const SizedBox(height: 20),
       const Padding(padding: EdgeInsetsDirectional.only(start: 12, bottom: 8), child: Text('القائمة الرئيسية', style: TextStyle(color: AppTheme.muted, fontSize: 11, fontWeight: FontWeight.w600))),
       _DrawerItem(icon: Icons.home_rounded, title: 'الرئيسية', onTap: () => Navigator.pop(context)),
       _DrawerItem(icon: Icons.tune_rounded, title: 'الإعدادات', onTap: () => go(context, SettingsScreen(storage: storage, themeMode: themeMode, onThemeChanged: onThemeChanged))),
+      _DrawerItem(icon: Icons.share_rounded, title: 'مشاركة التطبيق', onTap: shareApp),
       const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider()),
       const Padding(padding: EdgeInsetsDirectional.only(start: 12, bottom: 8), child: Text('عن التطبيق', style: TextStyle(color: AppTheme.muted, fontSize: 11, fontWeight: FontWeight.w600))),
-      _DrawerItem(icon: Icons.auto_awesome_outlined, title: 'تحديثات المطوّر', onTap: () => go(context, const UpdatesScreen())),
-      _DrawerItem(icon: Icons.code_rounded, title: 'حساب المطوّر', onTap: () => go(context, const DeveloperScreen())),
-      _DrawerItem(icon: Icons.info_outline_rounded, title: 'عن مسبحتي', onTap: () => go(context, const AboutScreen())),
-      _DrawerItem(icon: Icons.support_agent_rounded, title: 'المساعدة والدعم', onTap: () => go(context, const DeveloperScreen())),
+      _DrawerItem(icon: Icons.support_agent_rounded, title: 'المساعدة والدعم', onTap: () => go(context, const HelpScreen())),
+      _DrawerItem(icon: Icons.info_outline_rounded, title: 'عن سَكِينة', onTap: () => go(context, const AboutScreen())),
       const SizedBox(height: 20),
-      const Center(child: Text('الإصدار 1.4.0', style: TextStyle(color: AppTheme.muted, fontSize: 10))),
+      const Center(child: Text('الإصدار 1.5.0', style: TextStyle(color: AppTheme.muted, fontSize: 10))),
     ])),
   );
   }
