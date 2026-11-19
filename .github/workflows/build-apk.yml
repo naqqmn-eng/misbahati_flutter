@@ -33,7 +33,7 @@ jobs:
           export APKSIGNER=$ANDROID_HOME/build-tools/36.0.0/apksigner
           if [ ! -f $APKSIGNER ]; then APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | head -n 1); fi
           echo "Using apksigner: $APKSIGNER"
-          keytool -genkeypair -v -keystore /tmp/debug.keystore -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -d "CN=Android Debug,O=Android,C=US" -noprompt || true
+          keytool -genkeypair -v -keystore /tmp/debug.keystore -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -noprompt || true
           for apk in build/app/outputs/flutter-apk/*-release.apk; do
             echo "Signing $apk"
             $APKSIGNER sign --ks /tmp/debug.keystore --ks-pass pass:android --key-pass pass:android --out "${apk%.apk}-signed.apk" "$apk" || true
