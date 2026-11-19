@@ -2,5 +2,90 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
-class HelpScreen extends StatelessWidget { const HelpScreen({super.key}); Future<void> open() async { final tgApp=Uri.parse('tg://resolve?domain=U_S5S'); if(await canLaunchUrl(tgApp)){ await launchUrl(tgApp,mode:LaunchMode.externalApplication); return; } final tgWeb=Uri.parse('https://t.me/U_S5S'); if(await canLaunchUrl(tgWeb)){ await launchUrl(tgWeb,mode:LaunchMode.externalApplication); } } @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('المساعدة والدعم')),body:ListView(padding:const EdgeInsets.all(18),children:[const Card(child:ListTile(leading:Icon(Icons.help_outline,color:AppTheme.gold),title:Text('كيف أستخدم التطبيق؟'),subtitle:Text('اختر الذكر من فوق، اضغط الدائرة أو الزر الكبير للتسبيح، واختار هدفك من زر الهدف.'))),const Card(child:ListTile(leading:Icon(Icons.vibration,color:AppTheme.gold),title:Text('الاهتزاز ما يشتغل؟'),subtitle:Text('روح للإعدادات وتأكد ان الاهتزاز شغال، واذا طفيته وشغلته بيشتغل على طول بدون ما تخرج من التطبيق.'))),const Card(child:ListTile(leading:Icon(Icons.flag,color:AppTheme.gold),title:Text('العداد يوقف عند الهدف؟'),subtitle:Text('ايوه، اذا وصلت للهدف بيوقف، صفّر العداد عشان تبدأ من جديد.'))),const SizedBox(height:10),Card(child:Padding(padding:const EdgeInsets.all(20),child:Column(children:[const Icon(Icons.person_pin,size:52,color:AppTheme.gold),const SizedBox(height:8),const Text('ᯓN-A-Qᯓ',style:TextStyle(fontSize:20,fontWeight:FontWeight.bold)),const Text('@U_S5S',style:TextStyle(color:AppTheme.muted)),const SizedBox(height:14),FilledButton.icon(onPressed:open,icon:const Icon(Icons.send),label:const Text('التواصل عبر Telegram')),TextButton.icon(onPressed:(){Clipboard.setData(const ClipboardData(text:'@U_S5S'));ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('تم نسخ اسم المستخدم')));},icon:const Icon(Icons.copy),label:const Text('نسخ اسم المستخدم'))]))))]))); }
-class AboutScreen extends StatelessWidget { const AboutScreen({super.key}); @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('عن التطبيق')),body:Center(child:Card(margin:const EdgeInsets.all(24),child:Padding(padding:const EdgeInsets.all(26),child:Column(mainAxisSize:MainAxisSize.min,children:const[Icon(Icons.nightlight_round,size:58,color:AppTheme.gold),SizedBox(height:14),Text('مسبحتي',style:TextStyle(fontSize:26,fontWeight:FontWeight.bold)),SizedBox(height:10),Text('تطبيق بسيط لذكر الله والتسبيح.',textAlign:TextAlign.center),SizedBox(height:18),Text('الإصدار 1.5.0',style:TextStyle(color:AppTheme.muted)),Text('تطوير ᯓN-A-Qᯓ',style:TextStyle(color:AppTheme.gold))])))));} 
+
+class AboutScreen extends StatelessWidget {
+  const AboutScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('عن التطبيق')),
+      body: ListView(
+        padding: const EdgeInsets.all(18),
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(22),
+              child: Column(
+                children: [
+                  Icon(Icons.favorite, size: 56, color: AppTheme.accent),
+                  const SizedBox(height: 12),
+                  const Text('سَكِينة', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
+                  Text('رفيق الذكر والطمأنينة', style: TextStyle(color: AppTheme.muted, fontSize: 16)),
+                  const SizedBox(height: 12),
+                  const Text('تطبيق تسبيح بسيط وهادئ، يساعدك على الذكر في أي وقت، مع اهتزاز لطيف وعداد يوقف عند هدفك.', textAlign: TextAlign.center),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Card(child: ListTile(leading: Icon(Icons.info_outline), title: Text('الإصدار'), subtitle: Text('1.5.0'))),
+          const Card(child: ListTile(leading: Icon(Icons.person_outline), title: Text('المطور'), subtitle: Text('ᯓN-A-Qᯓ'))),
+        ],
+      ),
+    );
+  }
+}
+
+class HelpScreen extends StatelessWidget {
+  const HelpScreen({super.key});
+  Future<void> openTelegram() async {
+    final tgApp = Uri.parse('tg://resolve?domain=U_S5S');
+    if (await canLaunchUrl(tgApp)) {
+      await launchUrl(tgApp, mode: LaunchMode.externalApplication);
+      return;
+    }
+    final tgWeb = Uri.parse('https://t.me/U_S5S');
+    if (await canLaunchUrl(tgWeb)) {
+      await launchUrl(tgWeb, mode: LaunchMode.externalApplication);
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('المساعدة والدعم')),
+      body: ListView(
+        padding: const EdgeInsets.all(18),
+        children: [
+          Card(child: ListTile(leading: Icon(Icons.help_outline, color: AppTheme.accent), title: const Text('كيف أستخدم التطبيق؟'), subtitle: const Text('اختر الذكر من فوق، اضغط الدائرة أو الزر الكبير للتسبيح، واختار هدفك من زر الهدف.'))),
+          Card(child: ListTile(leading: Icon(Icons.vibration, color: AppTheme.accent), title: const Text('الاهتزاز ما يشتغل؟'), subtitle: const Text('روح للإعدادات وتأكد ان الاهتزاز شغال، واذا طفيته وشغلته بيشتغل على طول بدون ما تخرج من التطبيق.'))),
+          Card(child: ListTile(leading: Icon(Icons.flag, color: AppTheme.accent), title: const Text('العداد يوقف عند الهدف؟'), subtitle: const Text('ايوه، اذا وصلت للهدف بيوقف، صفّر العداد عشان تبدأ من جديد.'))),
+          const SizedBox(height: 10),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Icon(Icons.person_pin, size: 52, color: AppTheme.accent),
+                  const SizedBox(height: 8),
+                  const Text('ᯓN-A-Qᯓ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('@U_S5S', style: TextStyle(color: AppTheme.muted)),
+                  const SizedBox(height: 14),
+                  FilledButton.icon(onPressed: openTelegram, icon: const Icon(Icons.send), label: const Text('التواصل عبر Telegram')),
+                  TextButton.icon(
+                    onPressed: () {
+                      Clipboard.setData(const ClipboardData(text: '@U_S5S'));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تم نسخ اسم المستخدم')));
+                    },
+                    icon: const Icon(Icons.copy),
+                    label: const Text('نسخ اسم المستخدم'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
