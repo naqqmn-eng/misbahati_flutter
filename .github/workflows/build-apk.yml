@@ -26,11 +26,23 @@ jobs:
         run: test -f android/app/build.gradle && test -f android/settings.gradle
       - name: Get dependencies
         run: flutter pub get
-      - name: Build release APK
-        run: flutter build apk --debug
+      - name: Build release arm64 only
+        run: flutter build apk --release --target-platform android-arm64
+      - name: Sign APK with debug key
+        run: |
+          export APKSIGNER=$ANDROID_HOME/build-tools/36.0.0/apksigner
+          if [ ! -f $APKSIGNER ]; then APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | head -n 1); fi
+          echo "Using apksigner: $APKSIGNER"
+          keytool -genkeypair -v -keystore /tmp/debug.keystore -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -d "CN=Android Debug,O=Android,C=US" -noprompt || true
+          for apk in build/app/outputs/flutter-apk/*-release.apk; do
+            echo "Signing $apk"
+            $APKSIGNER sign --ks /tmp/debug.keystore --ks-pass pass:android --key-pass pass:android --out "${apk%.apk}-signed.apk" "$apk" || true
+            mv "${apk%.apk}-signed.apk" "$apk"
+          done
+          ls -lh build/app/outputs/flutter-apk/
       - uses: actions/upload-artifact@v4
         with:
           name: misbahati-release-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/*-release.apk
           if-no-files-found: error
           retention-days: 14
