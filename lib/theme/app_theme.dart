@@ -1,14 +1,62 @@
 import 'package:flutter/material.dart';
 
+// الوان سَكِينة - كحلي فقط، كل الاسماء القديمة = نفس اللون الكحلي/السماوي
+// عشان لا يخرب اي ملف قديم يستخدم emerald او gold او MisbahatiColors
+
+class MisbahatiColors extends ThemeExtension<MisbahatiColors> {
+  final Color primary;
+  final Color accent;
+  final Color surface;
+  final Color card;
+  final Color muted;
+  final Color emerald;
+  final Color gold;
+  const MisbahatiColors({
+    required this.primary,
+    required this.accent,
+    required this.surface,
+    required this.card,
+    required this.muted,
+    required this.emerald,
+    required this.gold,
+  });
+  @override
+  MisbahatiColors copyWith({Color? primary, Color? accent, Color? surface, Color? card, Color? muted, Color? emerald, Color? gold}) {
+    return MisbahatiColors(
+      primary: primary ?? this.primary,
+      accent: accent ?? this.accent,
+      surface: surface ?? this.surface,
+      card: card ?? this.card,
+      muted: muted ?? this.muted,
+      emerald: emerald ?? this.emerald,
+      gold: gold ?? this.gold,
+    );
+  }
+  @override
+  MisbahatiColors lerp(ThemeExtension<MisbahatiColors>? other, double t) {
+    if (other is! MisbahatiColors) return this;
+    return MisbahatiColors(
+      primary: Color.lerp(primary, other.primary, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      surface: Color.lerp(surface, other.surface, t)!,
+      card: Color.lerp(card, other.card, t)!,
+      muted: Color.lerp(muted, other.muted, t)!,
+      emerald: Color.lerp(emerald, other.emerald, t)!,
+      gold: Color.lerp(gold, other.gold, t)!,
+    );
+  }
+}
+
 class AppTheme {
-  // الوان سَكِينة - كحلي فقط بدون ذهبي
   static const Color navy = Color(0xFF0F1B2D);
   static const Color navyLight = Color(0xFF1A2E4A);
   static const Color navyLighter = Color(0xFF243A5A);
   static const Color accent = Color(0xFF7FB3D5);
   static const Color accentLight = Color(0xFFA8CBE8);
-  // اسم بديل لنفس اللون عشان اي ملف قديم يستخدم gold ما يخرب
+  // اسماء قديمة - كلها صارت نفس لون سَكِينة عشان ما يخرب البناء ولا يطلع اخضر
   static const Color gold = Color(0xFF7FB3D5);
+  static const Color emerald = Color(0xFF7FB3D5);
+  static const Color green = Color(0xFF7FB3D5);
 
   static const Color background = Color(0xFF0F1B2D);
   static const Color surface = Color(0xFF1A2E4A);
@@ -18,32 +66,25 @@ class AppTheme {
   static const Color textSecondary = Color(0xFF9AA9BC);
   static const Color primary = Color(0xFF1A2E4A);
 
+  static const MisbahatiColors colors = MisbahatiColors(
+    primary: navyLight,
+    accent: accent,
+    surface: surface,
+    card: card,
+    muted: muted,
+    emerald: emerald,
+    gold: gold,
+  );
+
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: const Color(0xFFF4F7FA),
     primaryColor: navy,
-    colorScheme: const ColorScheme.light(
-      primary: navy,
-      secondary: accent,
-      surface: Colors.white,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: navy,
-      foregroundColor: Colors.white,
-      centerTitle: true,
-    ),
-    cardTheme: CardThemeData(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        backgroundColor: navy,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-    ),
+    colorScheme: const ColorScheme.light(primary: navy, secondary: accent, surface: Colors.white),
+    appBarTheme: const AppBarTheme(backgroundColor: navy, foregroundColor: Colors.white, centerTitle: true),
+    cardTheme: CardThemeData(color: Colors.white, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+    filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(backgroundColor: navy, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)))),
+    extensions: const [colors],
     useMaterial3: true,
   );
 
@@ -51,32 +92,13 @@ class AppTheme {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: navy,
     primaryColor: navyLight,
-    colorScheme: const ColorScheme.dark(
-      primary: accent,
-      secondary: accentLight,
-      surface: navyLight,
-      background: navy,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: navy,
-      foregroundColor: Colors.white,
-      centerTitle: true,
-    ),
-    cardTheme: CardThemeData(
-      color: navyLight,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        backgroundColor: navyLight,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-    ),
+    colorScheme: const ColorScheme.dark(primary: accent, secondary: accentLight, surface: navyLight, background: navy),
+    appBarTheme: const AppBarTheme(backgroundColor: navy, foregroundColor: Colors.white, centerTitle: true),
+    cardTheme: CardThemeData(color: navyLight, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+    filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(backgroundColor: navyLight, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)))),
+    extensions: const [colors],
     useMaterial3: true,
   );
 
-  // لو كودك يستخدم AppTheme.theme
   static ThemeData get theme => darkTheme;
 }
